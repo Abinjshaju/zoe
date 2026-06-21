@@ -1579,9 +1579,9 @@ def interactive_setup() -> None:
     _PLATFORMS["dingtalk"] dict in hermes_cli/gateway.py. CLI helpers are
     lazy-imported so the plugin's module-load surface stays minimal.
     """
-    from hermes_cli.config import get_env_value, save_env_value
-    from hermes_cli.setup import prompt_choice
-    from hermes_cli.cli_output import (
+    from zoe_cli.config import get_env_value, save_env_value
+    from zoe_cli.setup import prompt_choice
+    from zoe_cli.cli_output import (
         prompt,
         prompt_yes_no,
         print_header,
@@ -1607,7 +1607,7 @@ def interactive_setup() -> None:
 
     if method == 0:
         try:
-            from hermes_cli.dingtalk_auth import dingtalk_qr_auth
+            from zoe_cli.dingtalk_auth import dingtalk_qr_auth
         except ImportError as exc:
             print_warning(f"QR auth module failed to load ({exc}), falling back to manual input.")
             _manual_credential_entry(prompt, save_env_value, print_success)

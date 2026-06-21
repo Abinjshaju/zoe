@@ -1695,9 +1695,9 @@ def interactive_setup() -> None:
     Replaces hermes_cli/gateway.py::_setup_wecom and the static
     _PLATFORMS["wecom"] dict. CLI helpers are lazy-imported.
     """
-    from hermes_cli.config import get_env_value, save_env_value
-    from hermes_cli.setup import prompt_choice
-    from hermes_cli.cli_output import (
+    from zoe_cli.config import get_env_value, save_env_value
+    from zoe_cli.setup import prompt_choice
+    from zoe_cli.cli_output import (
         prompt,
         prompt_yes_no,
         print_header,

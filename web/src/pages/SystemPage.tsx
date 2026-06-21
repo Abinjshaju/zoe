@@ -190,12 +190,10 @@ export default function SystemPage() {
   const [hookApprove, setHookApprove] = useState(true);
   const [creatingHook, setCreatingHook] = useState(false);
 
-  // ── Update check ───────────────────────────────────────────────────
-  const [updateInfo, setUpdateInfo] = useState<UpdateCheckResponse | null>(
-    null,
-  );
-  const [checkingUpdate, setCheckingUpdate] = useState(false);
-  const [updateConfirmOpen, setUpdateConfirmOpen] = useState(false);
+  // Updates are disabled in Zoe v0.1
+  const updateInfo = null;
+  const checkingUpdate = false;
+  const updateConfirmOpen = false;
 
   const loadAll = useCallback(() => {
     Promise.allSettled([
@@ -207,11 +205,8 @@ export default function SystemPage() {
       api.getHooks(),
       api.getCurator(),
       api.getPortal(),
-      // Cached (non-forced) check so the version row shows update status on
-      // load without a separate effect / a forced network round-trip.
-      api.checkHermesUpdate(false),
     ])
-      .then(([s, st, m, p, c, h, cur, prt, upd]) => {
+      .then(([s, st, m, p, c, h, cur, prt]) => {
         if (s.status === "fulfilled") setStatus(s.value);
         if (st.status === "fulfilled") setStats(st.value);
         if (m.status === "fulfilled") setMemory(m.value);
@@ -220,7 +215,6 @@ export default function SystemPage() {
         if (h.status === "fulfilled") setHooks(h.value);
         if (cur.status === "fulfilled") setCurator(cur.value);
         if (prt.status === "fulfilled") setPortal(prt.value);
-        if (upd.status === "fulfilled") setUpdateInfo(upd.value);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -383,64 +377,6 @@ export default function SystemPage() {
   }, [shareRedact, showToast]);
 
 
-  // ── Update check / apply ───────────────────────────────────────────
-  const checkForUpdate = useCallback(
-    async (force = false) => {
-      if (status?.can_update_hermes === false) return;
-      setCheckingUpdate(true);
-      try {
-        const info = await api.checkHermesUpdate(force);
-        setUpdateInfo(info);
-        if (force) {
-          if (info.update_available) {
-            showToast(
-              info.behind && info.behind > 0
-                ? `Update available — ${info.behind} commit${info.behind === 1 ? "" : "s"} behind`
-                : "Update available",
-              "success",
-            );
-          } else if (info.behind === 0) {
-            showToast("You're on the latest version", "success");
-          } else if (info.message) {
-            showToast(info.message, "error");
-          }
-        }
-      } catch (e) {
-        showToast(`Update check failed: ${e}`, "error");
-      } finally {
-        setCheckingUpdate(false);
-      }
-    },
-    [showToast, status?.can_update_hermes],
-  );
-
-  // Auto-check (cached) runs inside loadAll on mount; this is the
-  // user-triggered forced re-check from the "Check for updates" button.
-  const applyUpdate = async () => {
-    setUpdateConfirmOpen(false);
-    if (status?.can_update_hermes === false) {
-      showToast(
-        "Hermes updates are managed outside this dashboard.",
-        "success",
-      );
-      return;
-    }
-    try {
-      const resp = await api.updateHermes();
-      if (!resp.ok) {
-        showToast(
-          resp.message ??
-            "Updates don't apply from this dashboard.",
-          "success",
-        );
-        return;
-      }
-      setActiveAction(resp.name ?? "hermes-update");
-      showToast("Update started", "success");
-    } catch (e) {
-      showToast(`Update failed: ${e}`, "error");
-    }
-  };
 
   const checkpointsPrune = useConfirmDelete({
     onDelete: useCallback(async () => {

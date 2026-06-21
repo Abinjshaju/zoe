@@ -134,7 +134,7 @@ def _send_imap_id(imap: "imaplib.IMAP4") -> None:
     """
     try:
         try:
-            from hermes_cli import __version__ as _hermes_version
+            from zoe_cli import __version__ as _hermes_version
         except Exception:  # noqa: BLE001 — keep ID best-effort if import fails
             _hermes_version = "0"
         imap.xatom(
@@ -952,7 +952,7 @@ def _is_connected(config) -> bool:
     extra = getattr(config, "extra", {}) or {}
     if extra.get("address"):
         return True
-    import hermes_cli.gateway as gateway_mod
+    import zoe_cli.gateway as gateway_mod
     return bool((gateway_mod.get_env_value("EMAIL_ADDRESS") or "").strip())
 
 

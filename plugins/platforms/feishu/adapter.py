@@ -141,7 +141,7 @@ from gateway.platforms.base import (
     cache_image_from_bytes,
 )
 from gateway.status import acquire_scoped_lock, release_scoped_lock
-from hermes_constants import get_hermes_home
+from zoe_constants import get_hermes_home
 from utils import atomic_json_write, env_float, env_int
 
 logger = logging.getLogger(__name__)
@@ -5301,9 +5301,9 @@ def interactive_setup() -> None:
     Replaces the central _setup_feishu in hermes_cli/gateway.py and the static
     _PLATFORMS["feishu"] dict. CLI helpers are lazy-imported.
     """
-    from hermes_cli.config import get_env_value, save_env_value
-    from hermes_cli.setup import prompt_choice
-    from hermes_cli.cli_output import (
+    from zoe_cli.config import get_env_value, save_env_value
+    from zoe_cli.setup import prompt_choice
+    from zoe_cli.cli_output import (
         prompt,
         prompt_yes_no,
         print_header,

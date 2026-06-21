@@ -463,7 +463,7 @@ async def _standalone_send(
 def _is_connected(config) -> bool:
     """SMS is connected when Twilio credentials are present. Mirrors the legacy
     _PLATFORM_CONNECTED_CHECKERS[Platform.SMS] = bool(TWILIO_ACCOUNT_SID)."""
-    import hermes_cli.gateway as gateway_mod
+    import zoe_cli.gateway as gateway_mod
     return bool((gateway_mod.get_env_value("TWILIO_ACCOUNT_SID") or "").strip())
 
 
